@@ -1,3 +1,12 @@
+# Future You — V1.11 visual regression
+
+- Replaced coral/pink secondary contrast treatment with steel-blue/slate.
+- Checked that no `--warm`, `--warm-soft`, or `.card.warm` tokens remain.
+- Kept medical/error warning colours red.
+- No training, health, persistence or migration logic changed from V1.9.
+
+---
+
 # Future You V1.9 — Test notes
 
 ## Automated program regression

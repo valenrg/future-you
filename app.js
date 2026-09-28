@@ -409,7 +409,7 @@ function todayView() {
       <button class="btn secondary small" style="margin-top:10px" data-action="save-sleep">Save sleep</button>
     </div>
 
-    ${!doneToday && todaySession?.type==='strength'?`<div class="card warm today-minimum">
+    ${!doneToday && todaySession?.type==='strength'?`<div class="card contrast today-minimum">
       <div class="row between"><div><h3>Bad day? Do the minimum.</h3><p class="muted" style="font-size:13px">A 12-minute full-body session can substitute for today's strength session.</p></div></div>
       <button class="btn secondary" data-action="minimum-day">Do the 12-minute version</button>
     </div>`:''}
@@ -485,7 +485,7 @@ function planView() {
       <button class="btn lime" data-action="calendar">Add next 12 weeks to calendar</button>
     </div>
     ${state.missedReview ? missedReviewCard(schedule) : ''}
-    ${missed.length ? `<div class="card warm plan-missed"><h3>Missed session?</h3><p class="muted">No guilt. Review what got in the way, then do it today or leave it behind deliberately.</p>${missed.map(m=>{
+    ${missed.length ? `<div class="card contrast plan-missed"><h3>Missed session?</h3><p class="muted">No guilt. Review what got in the way, then do it today or leave it behind deliberately.</p>${missed.map(m=>{
       const checkin=state.checkins.find(c=>c.date===m.date && c.sessionId===m.session.id);
       return `<button class="btn secondary" style="margin-top:8px" data-missed="${m.date}" data-session="${m.session.id}">${m.day}: ${m.session.title}${checkin?' · reviewed':''} →</button>`;
     }).join('')}</div>`:''}
@@ -634,7 +634,7 @@ function healthView() {
 
     <div class="card health-supplements"><span class="eyebrow">Supplements</span><h3>A filter, not a stack.</h3>${supplementCards}<button class="btn secondary small" data-view="evidence">Why these?</button></div>
 
-    ${(h.menopause==='peri'||h.menopause==='post'||h.boneFlags.length)?`<div class="card warm health-menopause"><span class="eyebrow">Menopause + bone</span><h3>Use life stage where it actually changes decisions.</h3><p class="muted">Future You uses menopause context for bone and prevention prompts, not to assume you are weaker or to downshift your training automatically. Symptoms that disrupt sleep, quality of life or training are reasonable reasons to discuss menopause care with a qualified clinician.</p></div>`:''}
+    ${(h.menopause==='peri'||h.menopause==='post'||h.boneFlags.length)?`<div class="card contrast health-menopause"><span class="eyebrow">Menopause + bone</span><h3>Use life stage where it actually changes decisions.</h3><p class="muted">Future You uses menopause context for bone and prevention prompts, not to assume you are weaker or to downshift your training automatically. Symptoms that disrupt sleep, quality of life or training are reasonable reasons to discuss menopause care with a qualified clinician.</p></div>`:''}
 
     <div class="notice health-disclaimer">Future You is Europe-centric but country-independent. Screening and lab schedules vary across countries, medical history and individual risk, so Health gives prompts rather than universal test intervals or diagnostic interpretation.</div>
   </section>`;
@@ -696,11 +696,11 @@ function workoutPlayer(session) {
     <section class="hero workout-hero"><div class="eyebrow">${session.phase}</div><h2>${session.title}</h2><p class="muted">${session.phaseNote || 'Quality first.'}</p><div class="workout-meta"><span class="pill purple">${session.exercises.length} movements</span><span class="pill">Log only what you do</span></div></section>
     ${session.creditTitle?`<div class="card accent"><span class="eyebrow">Minimum day credit</span><p style="margin:6px 0 0">Finish this and it counts toward today’s <strong>${session.creditTitle}</strong> for weekly consistency.</p></div>`:''}
     ${state.profile.limitations?.length?`<div class="notice"><strong>You flagged a training constraint.</strong> V1 does not diagnose pain or rehab injuries. Use a symptom-free range, skip any movement that provokes symptoms, and follow individualized clinical guidance where relevant.</div>`:''}
-    ${session.power?`<div class="card power"><span class="eyebrow" style="color:var(--warm)">Power first</span><h3 style="margin-top:8px">${session.power.name}</h3><p style="margin-bottom:0">${session.power.sets} × ${session.power.reps} · ${session.power.note}</p></div>`:''}
+    ${session.power?`<div class="card power"><span class="eyebrow" style="color:var(--contrast)">Power first</span><h3 style="margin-top:8px">${session.power.name}</h3><p style="margin-bottom:0">${session.power.sets} × ${session.power.reps} · ${session.power.note}</p></div>`:''}
     <form id="workoutForm" class="workout-stack">
       ${session.exercises.map((ex,ei)=>exerciseForm(ex,ei,history)).join('')}
     </form>
-    ${session.intervalFinisher?`<div class="card warm"><span class="eyebrow">Optional intensity finisher</span><h3 style="margin-top:8px">${session.intervalFinisher.reps} × ${session.intervalFinisher.work}s</h3><p class="muted" style="margin-bottom:0">${session.intervalFinisher.note} Recover ${Math.round(session.intervalFinisher.recovery/60*10)/10} min between efforts.</p></div>`:''}
+    ${session.intervalFinisher?`<div class="card contrast"><span class="eyebrow">Optional intensity finisher</span><h3 style="margin-top:8px">${session.intervalFinisher.reps} × ${session.intervalFinisher.work}s</h3><p class="muted" style="margin-bottom:0">${session.intervalFinisher.note} Recover ${Math.round(session.intervalFinisher.recovery/60*10)/10} min between efforts.</p></div>`:''}
     <div class="card dark workout-finish-card"><span class="eyebrow" style="color:#b8afff">One tap to progress</span><h3 style="font-size:24px;margin-top:8px">How did the strength work feel?</h3><p style="color:#cbc7d5">This sets the next workout. No RPE math required.</p><div class="grid2">
       <button type="button" class="btn lime" data-finish="easy">Easier than planned</button>
       <button type="button" class="btn secondary" style="color:white;border-color:#555;background:rgba(255,255,255,.04)" data-finish="right">About right</button>

@@ -1,6 +1,18 @@
-# Future You — V1.9
+# Future You — V1.11
 
 A responsive, local-only Progressive Web App for women 40+ focused on evidence-led training, accountability and a deliberately small longevity layer.
+
+## What V1.11 changes
+
+### Aubergine contrast cards
+
+The secondary emphasis palette now uses deep aubergine **#700353** as its accent, paired with a pale aubergine card background (**#F2E7EF**) and softer matching border. It is used for Minimum Day, missed-session recovery, menopause/bone context, interval finishers and power emphasis.
+
+The existing violet, acid green, black and warm off-white palette is unchanged. True warning/error states remain red so colour keeps a clear semantic meaning.
+
+## What V1.10 changed
+
+V1.10 introduced a separate secondary-emphasis colour role; V1.11 refines that role from steel-blue/slate to aubergine.
 
 ## What V1.9 changes
 
