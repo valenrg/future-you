@@ -600,8 +600,6 @@ function healthView() {
   const foundation=healthFoundations();
   const schedule=scheduleForWeek(state.profile,state.startDate);
   const proteinTarget=proteinTargetText(state.profile);
-  const fibreCount=(state.daily.fibreMeals||[]).filter(Boolean).length;
-  const proteinCount=(state.daily.proteinMeals||[]).filter(Boolean).length;
   const sleep=state.daily.sleepHours;
   const supplementCards=[
     `<div class="supplement-line"><div><strong>Creatine monohydrate</strong><p>Worth considering with resistance training. The EU has an authorised muscle-strength claim for adults over 55 at 3 g/day alongside regular progressive resistance training.</p></div><span class="pill good">Consider</span></div>`,
@@ -620,7 +618,7 @@ function healthView() {
     <div class="health-pillar-grid">
       <div class="card pillar-card"><span class="eyebrow">Train</span><h3>${completedPlannedThisWeek(schedule)}/${plannedSessionsThisWeek(schedule).length} planned sessions</h3><p class="muted">Strength is the anchor. Keep easy aerobic movement around it; public-health guidance targets 150–300 min moderate or 75–150 min vigorous activity/week.</p><button class="btn secondary small" data-view="plan">Open training plan</button></div>
 
-      <div class="card pillar-card"><span class="eyebrow">Fuel</span><h3>Protein + fibre.</h3><p class="muted">Protein target: ${proteinTarget}. Fibre: aim for at least 25 g/day overall, mainly from wholegrains, vegetables, fruit, legumes, nuts and seeds.</p><div class="fuel-status"><span><strong>${proteinCount}/4</strong> protein meals today</span><span><strong>${fibreCount}/4</strong> fibre-rich meals today</span></div><div class="segment health-meals">${['Breakfast','Lunch','Dinner','Snack'].map((x,i)=>`<button data-fibre="${i}" class="${state.daily.fibreMeals?.[i]?'on':''}">${state.daily.fibreMeals?.[i]?'✓ ':''}${x}</button>`).join('')}</div><p class="muted" style="font-size:12px;margin-bottom:0">Tap when the meal or snack included a meaningful fibre source.</p></div>
+      <div class="card pillar-card"><span class="eyebrow">Fuel</span><h3>Protein + fibre.</h3><p class="muted">Protein target: ${proteinTarget}. Fibre: aim for at least 25 g/day overall, mainly from wholegrains, vegetables, fruit, legumes, nuts and seeds.</p><p class="muted" style="font-size:12px;margin-bottom:0">Track today’s protein and fibre separately on the Today screen.</p></div>
 
       <div class="card pillar-card"><span class="eyebrow">Recover</span><h3>${sleep ? `${sleep} h last night` : 'Sleep is not logged'}</h3><p class="muted">Aim for 7–9 hours most nights. Persistent insomnia, loud snoring or suspected sleep apnoea deserve proper assessment, not a readiness score.</p></div>
 

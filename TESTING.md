@@ -1,4 +1,4 @@
-# Future You V1.8 — Test notes
+# Future You V1.9 — Test notes
 
 ## Automated program regression
 
@@ -14,7 +14,7 @@ Assertions included:
 
 - every strength session contains exercises
 - experienced users never receive Fast sit-to-stand as their standard power drill
-- program generation remains valid after the V1.8 equipment changes
+- program generation remains valid after the V1.9 equipment changes
 
 ## Barbell-specific checks
 
@@ -48,7 +48,7 @@ Static integration assertions passed for:
 - Protein across the day tracker
 - Fibre across the day tracker
 - local migration from legacy `proteinAnchors` and `plantAnchors`
-- V1.8 calendar export identifier
+- V1.9 calendar export identifier
 
 ## Release integrity
 
@@ -69,4 +69,12 @@ Before a beta release, still test on physical iPhone/iPad/Android devices for:
 - protein/fibre tracker touch targets
 - Add to Home Screen
 - calendar export
-- service-worker update from V1.7 → V1.8
+- service-worker update from V1.7 → V1.9
+
+
+## V1.9 Health/Fuel cleanup
+
+- Health → Protein + fibre card is informational only.
+- No meal checkboxes or tappable fibre controls appear in Health.
+- Protein and fibre daily tracking remains on Today as two separate trackers.
+- Existing local daily data is unchanged.

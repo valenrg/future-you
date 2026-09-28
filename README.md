@@ -1,8 +1,8 @@
-# Future You — V1.8
+# Future You — V1.9
 
 A responsive, local-only Progressive Web App for women 40+ focused on evidence-led training, accountability and a deliberately small longevity layer.
 
-## What V1.8 changes
+## What V1.9 changes
 
 ### Training setup can now be changed in Settings
 
@@ -36,7 +36,7 @@ Today now includes:
 - **Fibre across the day** — Breakfast / Lunch / Dinner / Snack
 - A simple daily fibre reference of **at least 25 g/day**, while the tracker remains food-pattern based rather than pretending the meal checkboxes measure grams
 
-The Health/Fuel card shows both protein-meal and fibre-rich-meal status. Existing V1.7 daily data migrates locally from the previous `proteinAnchors` / `plantAnchors` fields.
+The Health/Fuel card is informational only. Daily protein and fibre meal check-ins live exclusively on the Today screen, where they are tracked separately. Existing V1.7 daily data still migrates locally from the previous `proteinAnchors` / `plantAnchors` fields.
 
 ### Power work now reflects training experience
 
