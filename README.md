@@ -1,53 +1,67 @@
-# Future You — V1.7
+# Future You — V1.8
 
-A mobile-first, local-only Progressive Web App for women 40+ focused on evidence-led training, accountability and a deliberately small longevity layer.
+A responsive, local-only Progressive Web App for women 40+ focused on evidence-led training, accountability and a deliberately small longevity layer.
 
-## What V1.7 adds: responsive layouts
+## What V1.8 changes
 
-V1.7 keeps the V1.6 training/Health logic and makes the interface adapt deliberately across phone, tablet and desktop.
+### Training setup can now be changed in Settings
 
-### Mobile
+The user can switch at any time between:
 
-- Remains the reference experience
-- Single-column content and floating bottom navigation
-- Narrow-phone hardening down to 320 px
-- Touch-first workout inputs and onboarding controls
-- Horizontal weekly strip only where space is genuinely limited
+- **Gym**
+- **Home**
+- **Bodyweight / no equipment**
 
-### Tablet
+Changing setup does not delete workout history. It changes future exercise selection. Exercise swaps that are not available in the new setup are ignored until they become compatible again.
 
-- Wider app canvas instead of a centred 600 px phone column
-- Today pairs the main training action with the longevity focus
-- Weekly schedule uses all seven columns without horizontal scrolling
-- Protein/recovery cards use a two-column layout
-- Plan sessions, Evidence and Settings use two-column card layouts
-- Health priorities and pillars use the additional width
-- Bottom navigation remains thumb-friendly
+### Home equipment is more complete
 
-### Desktop
+Home equipment is now explicitly selected rather than assumed. The list is shown in this order:
 
-- Fixed left navigation rail replaces the mobile bottom bar from 1100 px
-- Main app canvas expands to roughly 1,000 px of working content
-- Today, Plan, Health, Evidence and Settings use desktop-specific grid layouts
-- Workout player shows two exercise cards per row from 900 px
-- Landing page becomes a two-column editorial layout
-- Completion actions use side-by-side controls
-- Onboarding remains intentionally narrower so it still reads as a focused decision flow rather than a sprawling form
+1. **Barbell**
+2. Dumbbells
+3. Resistance bands
+4. Bench / sturdy step
+5. Kettlebell
+
+Selecting a barbell unlocks barbell variants for squat, Romanian deadlift, bench/floor press, row, overhead press and hip thrust / glute bridge. Barbell programming assumes an appropriate safe setup, including a rack or bench where required.
+
+### Protein + fibre tracking
+
+The user-facing term **protein anchors** has been removed.
+
+Today now includes:
+
+- **Protein across the day** — Breakfast / Lunch / Dinner / Snack
+- **Fibre across the day** — Breakfast / Lunch / Dinner / Snack
+- A simple daily fibre reference of **at least 25 g/day**, while the tracker remains food-pattern based rather than pretending the meal checkboxes measure grams
+
+The Health/Fuel card shows both protein-meal and fibre-rich-meal status. Existing V1.7 daily data migrates locally from the previous `proteinAnchors` / `plantAnchors` fields.
+
+### Power work now reflects training experience
+
+**Fast sit-to-stand is now a beginner entry-point only** (or used where a beginner also has an impact constraint).
+
+- Beginner, early weeks: fast sit-to-stand → low pogo hops → low squat jumps
+- Intermediate: low pogo hops → low squat jumps
+- Experienced / regular lifter: **countermovement jumps from week 1**, kept low-volume and high-quality
+- Experienced lifters with a no-impact constraint get a non-impact power drill rather than sit-to-stand
+
+This keeps the Stacy Sims–informed emphasis on power while scaling the drill to training age and constraints.
 
 ## Core product features retained
 
-### Smarter training engine
+### Training engine
 
-- Primary emphasis: **stay strong / build muscle / bone + power / improve fitness**
-- Realistic session length: **25 / 35 / 45 minutes**
-- Gym / home / bodyweight programming
-- Home programming respects equipment actually owned: dumbbells, resistance bands, bench/step and kettlebell
-- 25-minute sessions reduce movement count rather than rushing the same workout
-- Goal- and phase-aware rep emphasis
-- Fitness-focused conditioning exposure
-- Scaled power/impact programming where appropriate
-- Persistent exercise swaps within the same movement pattern
-- Automatic progression that remains inside the programmed rep range
+- Primary emphasis: stay strong / build muscle / bone + power / improve fitness
+- 25 / 35 / 45-minute sessions
+- 2 / 3 / 4 training days
+- Gym / home / bodyweight exercise libraries
+- Equipment-aware home programming
+- Experience-appropriate power work
+- Short-intensity programming
+- Persistent exercise swaps
+- Automatic progression inside the prescribed rep range
 - 12-minute Minimum Day for planned strength sessions
 
 ### Health / longevity layer
@@ -56,7 +70,7 @@ Country-independent but Europe-centric guidance around:
 
 - blood pressure, lipids and blood-sugar screening awareness
 - preventive screening awareness without hard-coded national timetables
-- protein and plant/fibre intake
+- protein and fibre-rich eating
 - sleep
 - nicotine and alcohol
 - menopause/bone-health context where it changes the recommendation
@@ -64,39 +78,26 @@ Country-independent but Europe-centric guidance around:
 
 Future You prioritizes up to three **Do the big things first** actions. It does not calculate biological age, disease risk or a longevity score.
 
-### Accountability + privacy
+### Privacy + deployment
 
-- Weekly consistency instead of punitive streaks
-- Make-up workouts still count toward the intended session
-- Missed-session review
-- 12-week calendar export with reminders
-- Completion screen with logged work and progression
-- Profile, Health baseline, training history and check-ins stored only in browser IndexedDB
-- No account, analytics SDK or cloud health database in V1.7
+- No account
+- No cloud health database
+- Profile, workout history, daily check-ins and Health baseline stored in browser IndexedDB
+- Existing local data is retained when the static site is updated
 - Offline caching / Add-to-Home-Screen support
-- Delete-all-local-data control
-
-## Important product boundaries
-
-Future You remains an educational fitness/wellness prototype, not a diagnostic or treatment system.
-
-- It does not interpret laboratory values.
-- It does not diagnose hypertension, diabetes, osteoporosis, menopause-related conditions or cancer risk.
-- Screening schedules vary across countries and individual risk, so Health prompts the user to check what they are due for rather than hard-coding one timetable.
-- A previous fragility fracture, known low bone density, medical restriction or significant injury warrants individualized clinical care rather than app-based self-management.
-- Exercise demonstration/video remains an important gap before broad beginner use.
+- Static build suitable for GitHub Pages prototype deployment
 
 ## Run locally
 
 Service workers require HTTP(S), not `file://`.
 
 ```bash
-cd future-you-v1.7
+cd future-you-v1.8
 python3 -m http.server 8080
 ```
 
 Then open `http://localhost:8080`.
 
-## Deploy
+## Product boundary
 
-The release folder is a static site and can be deployed directly to GitHub Pages for prototype/testing use, or to another HTTPS static host.
+Future You remains an educational fitness/wellness prototype, not individualized medical care. Exercise demonstrations/video remain an important gap before broad beginner use.

@@ -24,7 +24,7 @@ const state = {
     experience: 'beginner',
     primaryGoal: 'strength',
     equipment: 'home_equipment',
-    homeKit: ['dumbbells','bands'],
+    homeKit: [],
     sessionMinutes: 35,
     exerciseOverrides: {},
     daysPerWeek: 3,
@@ -62,7 +62,7 @@ function normalizeProfile(profile) {
     ...profile,
     primaryGoal: profile.primaryGoal || profile.goals?.[0] || 'strength',
     sessionMinutes: Number(profile.sessionMinutes || 35),
-    homeKit: Array.isArray(profile.homeKit) && profile.homeKit.length ? profile.homeKit : ['dumbbells','bands'],
+    homeKit: Array.isArray(profile.homeKit) ? profile.homeKit : [],
     exerciseOverrides: profile.exerciseOverrides || {},
     limitations: profile.limitations || [],
     goals: profile.goals?.length ? profile.goals : ['strong']
@@ -107,8 +107,14 @@ async function init() {
 
 async function loadDaily() {
   const existing = await db.getDaily(dateISO());
-  return existing ? {...existing, proteinAnchors: existing.proteinAnchors || [false,false,false,false], plantAnchors: existing.plantAnchors || [false,false,false]} : {
-    date: dateISO(), proteinAnchors: [false,false,false,false], plantAnchors: [false,false,false], sleepHours: null, movementMinutes: 0
+  if (existing) {
+    const proteinMeals = existing.proteinMeals || existing.proteinAnchors || [false,false,false,false];
+    const oldFibre = existing.fibreMeals || existing.plantAnchors || [false,false,false];
+    const fibreMeals = [...oldFibre, false, false, false, false].slice(0,4);
+    return {...existing, proteinMeals, fibreMeals};
+  }
+  return {
+    date: dateISO(), proteinMeals: [false,false,false,false], fibreMeals: [false,false,false,false], sleepHours: null, movementMinutes: 0
   };
 }
 
@@ -247,11 +253,12 @@ function onboard1() {
         ${option('No equipment','equipment','none','Bodyweight to start','○')}
       </div>
       ${showHomeKit ? `<div class="sub-question"><div class="eyebrow">What is actually available?</div><div class="equipment-chips">
+        ${option('Barbell','homeKit','barbell')}
         ${option('Dumbbells','homeKit','dumbbells')}
         ${option('Bands','homeKit','bands')}
         ${option('Bench / sturdy step','homeKit','bench')}
         ${option('Kettlebell','homeKit','kettlebell')}
-      </div><p class="muted" style="font-size:12px;margin-bottom:0">The app will not prescribe a band pulldown if you don't own a band.</p></div>` : ''}
+      </div><p class="muted" style="font-size:12px;margin-bottom:0">The app only uses equipment you select. Barbell movements assume a safe setup, including a rack or bench where required.</p></div>` : ''}
     </div>
 
     <div class="question-block">
@@ -349,7 +356,8 @@ function todayView() {
   const planned = schedule.find(x => x.day === todayName);
   const doneToday = state.workouts.find(w => w.date === dateISO());
   const proteinTarget = proteinTargetText(profile);
-  const proteinCount = state.daily.proteinAnchors.filter(Boolean).length;
+  const proteinCount = state.daily.proteinMeals.filter(Boolean).length;
+  const fibreCount = state.daily.fibreMeals.filter(Boolean).length;
   const sleep = state.daily.sleepHours;
   const todaySession = planned?.session;
   const healthAction = state.health?.setupDone ? longevityActions(state.health)[0] : null;
@@ -376,16 +384,22 @@ function todayView() {
     </div>
     ${primary}
     ${weeklyStrip(schedule)}
-    <div class="grid2 today-metrics">
-      <div class="metric"><span class="eyebrow">Protein</span><strong>${proteinCount}/4</strong><span class="muted">anchors · ${proteinTarget}</span></div>
+    <div class="today-metrics">
+      <div class="metric"><span class="eyebrow">Protein</span><strong>${proteinCount}/4</strong><span class="muted">meals · ${proteinTarget}</span></div>
+      <div class="metric"><span class="eyebrow">Fibre</span><strong>${fibreCount}/4</strong><span class="muted">fibre-rich meals</span></div>
       <div class="metric"><span class="eyebrow">Sleep</span><strong>${sleep ?? '—'}</strong><span class="muted">${sleep?'hours last night':'log last night'}</span></div>
     </div>
 
     ${state.health?.setupDone ? `<div class="card health-focus"><div class="row between"><div><span class="eyebrow">Longevity focus</span><h3>${healthAction?.title || 'Core foundations covered'}</h3><p class="muted">${healthAction?.short || 'Keep training, eating well, sleeping, and staying on top of prevention.'}</p></div><span class="health-focus-icon">${healthAction?.icon || '✓'}</span></div><button class="btn secondary small" data-view="health">Open Health</button></div>` : `<div class="card health-focus"><span class="eyebrow">Beyond training</span><h3>Set up your longevity basics.</h3><p class="muted">Two minutes to turn diet, prevention, bone health and supplements into a short action list. It stays on this device.</p><button class="btn secondary small" data-view="health">Set up Health</button></div>`}
 
     <div class="card today-protein" style="margin-top:14px">
-      <div class="row between"><div><h3>Protein anchors</h3><p class="muted" style="font-size:13px">Aim for protein across the day.</p></div><span class="pill">${proteinTarget}</span></div>
-      <div class="segment">${['Breakfast','Lunch','Dinner','Snack'].map((x,i)=>`<button data-protein="${i}" class="${state.daily.proteinAnchors[i]?'on':''}">${state.daily.proteinAnchors[i]?'✓ ':''}${x}</button>`).join('')}</div>
+      <div class="row between"><div><h3>Protein across the day</h3><p class="muted" style="font-size:13px">Mark meals or snacks that included a meaningful protein source.</p></div><span class="pill">${proteinTarget}</span></div>
+      <div class="segment">${['Breakfast','Lunch','Dinner','Snack'].map((x,i)=>`<button data-protein="${i}" class="${state.daily.proteinMeals[i]?'on':''}">${state.daily.proteinMeals[i]?'✓ ':''}${x}</button>`).join('')}</div>
+    </div>
+
+    <div class="card today-fibre">
+      <div class="row between"><div><h3>Fibre across the day</h3><p class="muted" style="font-size:13px">Mark meals or snacks with a meaningful source of vegetables, fruit, whole grains, legumes, nuts or seeds.</p></div><span class="pill">aim ≥25 g/day</span></div>
+      <div class="segment">${['Breakfast','Lunch','Dinner','Snack'].map((x,i)=>`<button data-fibre="${i}" class="${state.daily.fibreMeals[i]?'on':''}">${state.daily.fibreMeals[i]?'✓ ':''}${x}</button>`).join('')}</div>
     </div>
 
     <div class="card today-recovery">
@@ -586,7 +600,8 @@ function healthView() {
   const foundation=healthFoundations();
   const schedule=scheduleForWeek(state.profile,state.startDate);
   const proteinTarget=proteinTargetText(state.profile);
-  const plantCount=(state.daily.plantAnchors||[]).filter(Boolean).length;
+  const fibreCount=(state.daily.fibreMeals||[]).filter(Boolean).length;
+  const proteinCount=(state.daily.proteinMeals||[]).filter(Boolean).length;
   const sleep=state.daily.sleepHours;
   const supplementCards=[
     `<div class="supplement-line"><div><strong>Creatine monohydrate</strong><p>Worth considering with resistance training. The EU has an authorised muscle-strength claim for adults over 55 at 3 g/day alongside regular progressive resistance training.</p></div><span class="pill good">Consider</span></div>`,
@@ -605,7 +620,7 @@ function healthView() {
     <div class="health-pillar-grid">
       <div class="card pillar-card"><span class="eyebrow">Train</span><h3>${completedPlannedThisWeek(schedule)}/${plannedSessionsThisWeek(schedule).length} planned sessions</h3><p class="muted">Strength is the anchor. Keep easy aerobic movement around it; public-health guidance targets 150–300 min moderate or 75–150 min vigorous activity/week.</p><button class="btn secondary small" data-view="plan">Open training plan</button></div>
 
-      <div class="card pillar-card"><span class="eyebrow">Fuel</span><h3>Protein + plants.</h3><p class="muted">Protein target: ${proteinTarget}. For fibre, put wholegrains, vegetables, fruit or legumes into most meals rather than obsessing over a perfect diet.</p><div class="segment health-meals">${['Meal 1','Meal 2','Meal 3'].map((x,i)=>`<button data-plant="${i}" class="${state.daily.plantAnchors?.[i]?'on':''}">${state.daily.plantAnchors?.[i]?'✓ ':''}${x}</button>`).join('')}</div><p class="muted" style="font-size:12px;margin-bottom:0">Tap when the meal included a meaningful plant/fibre source.</p></div>
+      <div class="card pillar-card"><span class="eyebrow">Fuel</span><h3>Protein + fibre.</h3><p class="muted">Protein target: ${proteinTarget}. Fibre: aim for at least 25 g/day overall, mainly from wholegrains, vegetables, fruit, legumes, nuts and seeds.</p><div class="fuel-status"><span><strong>${proteinCount}/4</strong> protein meals today</span><span><strong>${fibreCount}/4</strong> fibre-rich meals today</span></div><div class="segment health-meals">${['Breakfast','Lunch','Dinner','Snack'].map((x,i)=>`<button data-fibre="${i}" class="${state.daily.fibreMeals?.[i]?'on':''}">${state.daily.fibreMeals?.[i]?'✓ ':''}${x}</button>`).join('')}</div><p class="muted" style="font-size:12px;margin-bottom:0">Tap when the meal or snack included a meaningful fibre source.</p></div>
 
       <div class="card pillar-card"><span class="eyebrow">Recover</span><h3>${sleep ? `${sleep} h last night` : 'Sleep is not logged'}</h3><p class="muted">Aim for 7–9 hours most nights. Persistent insomnia, loud snoring or suspected sleep apnoea deserve proper assessment, not a readiness score.</p></div>
 
@@ -640,15 +655,18 @@ function settingsView() {
   const p=state.profile;
   const sd=state.scheduleDraft;
   const swaps=Object.keys(p.exerciseOverrides||{}).length;
-  const kitLabel=(p.homeKit||[]).map(x=>({dumbbells:'Dumbbells',bands:'Bands',bench:'Bench / step',kettlebell:'Kettlebell'})[x]||x).join(' · ') || 'Household / bodyweight fallbacks';
+  const kitOrder=['barbell','dumbbells','bands','bench','kettlebell'];
+  const kitNames={barbell:'Barbell',dumbbells:'Dumbbells',bands:'Bands',bench:'Bench / step',kettlebell:'Kettlebell'};
+  const kitLabel=kitOrder.filter(x=>(p.homeKit||[]).includes(x)).map(x=>kitNames[x]).join(' · ') || 'Household / bodyweight fallbacks';
   return `<section class="view view-settings">
     <div class="hero" style="padding-top:20px"><div class="eyebrow">Settings</div><h1 style="font-size:48px">Your app. Your device.</h1></div>
     <div class="card settings-privacy"><h3>Privacy</h3><p class="muted">Future You stores your profile, training history, Health baseline and check-ins in this browser's IndexedDB. V1 has no account, analytics SDK or cloud health database.</p><div class="install-tip">If you clear browser/site data, your history disappears. That's part of the privacy trade-off.</div></div>
     <div class="card settings-install"><h3>Add to Home Screen</h3><p class="muted">Optional. On iPhone: Share → Add to Home Screen. The website then opens like an app. The normal website still works without this.</p></div>
     <div class="card settings-training"><div class="row between"><div><h3>Training setup</h3><p><strong>${experienceLabel(p.experience)}</strong> · ${p.daysPerWeek} days/week · ${equipmentLabel(p.equipment)}</p><p class="muted">${goalLabel(p.primaryGoal)} · ${p.sessionMinutes} min sessions${p.equipment==='home_equipment'?` · ${kitLabel}`:''}</p></div></div>
+      <label class="form-label">Where you train</label><div class="grid3 setup-options">${[['gym','Gym'],['home_equipment','Home'],['none','Bodyweight']].map(([v,l])=>`<button class="option ${p.equipment===v?'selected':''}" data-profile-set="equipment" data-value="${v}">${l}</button>`).join('')}</div>
+      ${p.equipment==='home_equipment'?`<label class="form-label">Home equipment</label><div class="equipment-chips">${[['barbell','Barbell'],['dumbbells','Dumbbells'],['bands','Bands'],['bench','Bench / step'],['kettlebell','Kettlebell']].map(([v,l])=>`<button class="option ${(p.homeKit||[]).includes(v)?'selected':''}" data-profile-toggle="homeKit" data-value="${v}">${l}</button>`).join('')}</div><p class="muted" style="font-size:12px;margin:9px 0 0">Barbell movements assume a safe setup, including a rack or bench where required.</p>`:''}
       <label class="form-label">Primary emphasis</label><div class="grid2">${[['strength','Stay strong'],['muscle','Build muscle'],['bone','Bone + power'],['fitness','Fitness']].map(([v,l])=>`<button class="option ${p.primaryGoal===v?'selected':''}" data-profile-set="primaryGoal" data-value="${v}">${l}</button>`).join('')}</div>
       <label class="form-label">Normal session length</label><div class="segment">${[25,35,45].map(v=>`<button class="${p.sessionMinutes===v?'on':''}" data-profile-set="sessionMinutes" data-value="${v}">${v} min</button>`).join('')}</div>
-      ${p.equipment==='home_equipment'?`<label class="form-label">Home equipment</label><div class="equipment-chips">${[['dumbbells','Dumbbells'],['bands','Bands'],['bench','Bench / step'],['kettlebell','Kettlebell']].map(([v,l])=>`<button class="option ${(p.homeKit||[]).includes(v)?'selected':''}" data-profile-toggle="homeKit" data-value="${v}">${l}</button>`).join('')}</div>`:''}
       ${swaps?`<div class="install-tip" style="margin-top:12px">${swaps} exercise preference${swaps===1?' is':'s are'} saved from workout swaps.</div><button class="btn secondary small" style="margin-top:10px" data-action="reset-swaps">Reset exercise swaps</button>`:''}
     </div>
     <div class="card settings-schedule"><div class="row between"><div><h3>Schedule</h3><p class="muted">${scheduleForWeek(p,state.startDate).map(x=>x.day).join(', ')} · ${timeMap[p.timeSlot][1]}</p></div></div><button class="btn secondary small" data-action="edit-schedule">Change days / time</button></div>
@@ -821,7 +839,7 @@ function wireCommon() {
   $$('[data-day]').forEach(el=>el.addEventListener('click',handleDay));
   $$('[data-start-session]').forEach(el=>el.addEventListener('click',()=>startSession(el.dataset.startSession)));
   $$('[data-protein]').forEach(el=>el.addEventListener('click',()=>toggleProtein(+el.dataset.protein)));
-  $$('[data-plant]').forEach(el=>el.addEventListener('click',()=>togglePlant(+el.dataset.plant)));
+  $$('[data-fibre]').forEach(el=>el.addEventListener('click',()=>toggleFibre(+el.dataset.fibre)));
   $$('[data-health-select]').forEach(el=>el.addEventListener('click',handleHealthSelect));
   $$('[data-swap-exercise]').forEach(el=>el.addEventListener('click',()=>swapActiveExercise(Number(el.dataset.swapExercise))));
   $$('[data-profile-set]').forEach(el=>el.addEventListener('click',()=>updateProfileField(el.dataset.profileSet,el.dataset.value)));
@@ -974,13 +992,13 @@ function startMinimumDay() {
 }
 
 async function toggleProtein(i) {
-  state.daily.proteinAnchors[i]=!state.daily.proteinAnchors[i];
+  state.daily.proteinMeals[i]=!state.daily.proteinMeals[i];
   await db.setDaily(state.daily); render();
 }
 
-async function togglePlant(i) {
-  state.daily.plantAnchors = state.daily.plantAnchors || [false,false,false];
-  state.daily.plantAnchors[i]=!state.daily.plantAnchors[i];
+async function toggleFibre(i) {
+  state.daily.fibreMeals = state.daily.fibreMeals || [false,false,false,false];
+  state.daily.fibreMeals[i]=!state.daily.fibreMeals[i];
   await db.setDaily(state.daily); render();
 }
 
@@ -1104,7 +1122,7 @@ function proteinTargetText(profile) {
 function labelMenopause(v){return ({regular:'regular cycles',peri:'perimenopause',post:'postmenopause',unsure:'stage unsure'})[v]||v;}
 function experienceLabel(v){return ({beginner:'Starting / restarting',intermediate:'Knows the basics',experienced:'Regular lifter'})[v]||v;}
 function goalLabel(v){return ({strength:'Stay strong',muscle:'Build muscle',bone:'Bone + power',fitness:'Improve fitness'})[v]||v;}
-function equipmentLabel(v){return ({gym:'gym',home_equipment:'home',none:'home + bodyweight'})[v]||v;}
+function equipmentLabel(v){return ({gym:'gym',home_equipment:'home',none:'bodyweight / no equipment'})[v]||v;}
 function formatLongDate(d){return new Intl.DateTimeFormat(undefined,{weekday:'long',day:'numeric',month:'long'}).format(d);}
 function escapeAttr(s){return String(s).replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;').replaceAll('>','&gt;');}
 
@@ -1114,7 +1132,7 @@ function downloadCalendar() {
   const schedule=scheduleForWeek(state.profile,state.startDate);
   const [time]=timeMap[state.profile.timeSlot]; const [hh,mm]=time.split(':').map(Number);
   const now=new Date(); const start=programStartDate();
-  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Future You//V1.7//EN','CALSCALE:GREGORIAN'];
+  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Future You//V1.8//EN','CALSCALE:GREGORIAN'];
   for(const item of schedule){
     let first=dateForDayName(item.day,now); first.setHours(hh,mm,0,0);
     while(first <= now || first < start) first.setDate(first.getDate()+7);

@@ -40,29 +40,34 @@ export function libraryFor(profile) {
   const has = x => kit.has(x);
   return {
     squat: unique([
+      has('barbell') ? 'Barbell squat' : null,
       has('dumbbells') ? 'Goblet squat' : null,
       has('kettlebell') ? 'Kettlebell goblet squat' : null,
       has('bench') ? 'Dumbbell squat to box' : null,
       'Chair squat'
     ]),
     hinge: unique([
+      has('barbell') ? 'Barbell Romanian deadlift' : null,
       has('dumbbells') ? 'Dumbbell Romanian deadlift' : null,
       has('kettlebell') ? 'Kettlebell deadlift' : null,
       has('bands') ? 'Banded good morning' : null,
       'Bodyweight hip hinge'
     ]),
     pushH: unique([
+      has('barbell') ? (has('bench') ? 'Barbell bench press' : 'Barbell floor press') : null,
       has('dumbbells') ? (has('bench') ? 'Dumbbell bench press' : 'Dumbbell floor press') : null,
       has('bands') ? 'Band chest press' : null,
       has('bench') ? 'Incline push-up' : 'Counter push-up'
     ]),
     pullH: unique([
+      has('barbell') ? 'Barbell row' : null,
       has('dumbbells') ? 'One-arm dumbbell row' : null,
       has('kettlebell') ? 'One-arm kettlebell row' : null,
       has('bands') ? 'Band row' : null,
       'Towel isometric row'
     ]),
     pushV: unique([
+      has('barbell') ? 'Barbell overhead press' : null,
       has('dumbbells') ? 'Dumbbell overhead press' : null,
       has('kettlebell') ? 'Kettlebell overhead press' : null,
       has('bands') ? 'Band overhead press' : null,
@@ -80,6 +85,7 @@ export function libraryFor(profile) {
       'Reverse lunge'
     ]),
     hip: unique([
+      has('barbell') ? (has('bench') ? 'Barbell hip thrust' : 'Barbell glute bridge') : null,
       has('dumbbells') ? 'Weighted glute bridge' : null,
       has('kettlebell') ? 'Kettlebell glute bridge' : null,
       has('bench') && has('dumbbells') ? 'Dumbbell hip thrust' : null,
@@ -100,7 +106,7 @@ export function alternativesFor(profile, pattern) {
 
 function bodyweightLike(name, profile) {
   if (profile.equipment === 'none') return true;
-  return /push-up|plank|dead bug|bird dog|sit-to-stand|chair squat|bodyweight|bridge|raise|march|step-up|split squat|reverse lunge|wall press|prone|towel/i.test(name) && !/dumbbell|kettlebell|weighted/i.test(name);
+  return /push-up|plank|dead bug|bird dog|sit-to-stand|chair squat|bodyweight|bridge|raise|march|step-up|split squat|reverse lunge|wall press|prone|towel/i.test(name) && !/barbell|dumbbell|kettlebell|weighted/i.test(name);
 }
 
 export function makeExercise(name, pattern, profile, opts = {}) {
@@ -135,11 +141,25 @@ function cueFor(pattern) {
 function powerBlock(profile, week) {
   const noImpact = profile.limitations.includes('no-impact') || profile.limitations.includes('pelvic-floor') || profile.limitations.includes('knee') || profile.limitations.includes('hip') || profile.limitations.includes('medical-clearance');
   const beginner = profile.experience === 'beginner';
-  if (noImpact || week <= 2) {
+  const experienced = profile.experience === 'experienced';
+
+  if (noImpact) {
+    if (beginner) return { name: 'Fast sit-to-stand', sets: 3, reps: 5, note: 'Stand up quickly; lower with control. Stop well before fatigue.' };
+    return { name: 'Fast squat to calf raise', sets: 3, reps: 5, note: 'Use a familiar pain-free squat depth, drive up fast, finish tall onto the toes, and keep it non-impact.' };
+  }
+
+  if (beginner && week <= 2) {
     return { name: 'Fast sit-to-stand', sets: 3, reps: 5, note: 'Stand up quickly; lower with control. Stop well before fatigue.' };
   }
   if (beginner && week <= 4) return { name: 'Low pogo hops', sets: 3, reps: 6, note: 'Small, quiet contacts. Stop if impact is uncomfortable.' };
-  if (week <= 4) return { name: 'Low pogo hops', sets: 3, reps: 8, note: 'Small, quiet contacts. Stop if impact is uncomfortable.' };
+
+  if (experienced) {
+    if (profile.primaryGoal === 'bone') return { name: 'Countermovement jump', sets: 4, reps: 4, note: 'Jump with intent, land softly, fully reset, and keep every rep crisp.' };
+    return { name: 'Countermovement jump', sets: 3, reps: 4, note: 'High intent, low fatigue: jump, land softly, fully reset, repeat.' };
+  }
+
+  if (week <= 2) return { name: 'Low pogo hops', sets: 3, reps: 8, note: 'Small, springy contacts with a quiet landing. Stop well before fatigue.' };
+  if (week <= 4) return { name: 'Low squat jump', sets: 3, reps: 4, note: 'Jump with intent, land softly, and fully reset between reps.' };
   if (profile.primaryGoal === 'bone') return { name: 'Low squat jump', sets: 4, reps: 5, note: 'Jump with intent, land softly, and fully reset. Quality over fatigue.' };
   return { name: 'Low squat jump', sets: 3, reps: 5, note: 'Jump with intent, land softly, fully reset between reps.' };
 }
