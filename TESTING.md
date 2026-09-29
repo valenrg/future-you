@@ -1,4 +1,4 @@
-# Future You — V1.11 visual regression
+# Future You — V1.13 visual regression
 
 - Replaced coral/pink secondary contrast treatment with steel-blue/slate.
 - Checked that no `--warm`, `--warm-soft`, or `.card.warm` tokens remain.
@@ -87,3 +87,24 @@ Before a beta release, still test on physical iPhone/iPad/Android devices for:
 - No meal checkboxes or tappable fibre controls appear in Health.
 - Protein and fibre daily tracking remains on Today as two separate trackers.
 - Existing local daily data is unchanged.
+
+
+## V1.13 legal checks
+
+- [x] Impressum reachable from landing page and Settings.
+- [x] Datenschutz/Privacy reachable from landing page and Settings.
+- [x] Health & Safety reachable from landing page and Settings.
+- [ ] Legal pages render in German and English on 320 px, 390 px, tablet and desktop widths.
+- [x] All legal pages link back to the app and to each other.
+- [x] Email link uses `hello@valentinacontini.eu`.
+- [x] Service worker cache includes all three legal pages.
+- [x] Pregnancy/medical restriction flag blocks unsupervised plan generation.
+
+
+## V1.13 language lock
+
+- Main `index.html` declares `lang="en"` and `translate="no"`.
+- Google automatic translation is disabled via `meta name="google" content="notranslate"`.
+- PWA manifest declares `lang: en`.
+- App UI legal labels are English-first.
+- Legal documents remain bilingual by design.

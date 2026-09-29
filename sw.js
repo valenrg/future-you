@@ -1,7 +1,7 @@
-const CACHE = 'future-you-v1.11.0';
+const CACHE = 'future-you-v1.13.0';
 const ASSETS = [
   './', './index.html', './styles.css', './app.js', './db.js', './program.js', './content.js',
-  './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'
+  './manifest.webmanifest', './impressum.html', './datenschutz.html', './health-safety.html', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'
 ];
 
 self.addEventListener('install', event => {

@@ -1,8 +1,8 @@
-# Future You — V1.11
+# Future You — V1.13
 
 A responsive, local-only Progressive Web App for women 40+ focused on evidence-led training, accountability and a deliberately small longevity layer.
 
-## What V1.11 changes
+## What V1.13 changes
 
 ### Aubergine contrast cards
 
@@ -12,7 +12,7 @@ The existing violet, acid green, black and warm off-white palette is unchanged. 
 
 ## What V1.10 changed
 
-V1.10 introduced a separate secondary-emphasis colour role; V1.11 refines that role from steel-blue/slate to aubergine.
+V1.10 introduced a separate secondary-emphasis colour role; V1.13 refines that role from steel-blue/slate to aubergine.
 
 ## What V1.9 changes
 
@@ -113,3 +113,17 @@ Then open `http://localhost:8080`.
 ## Product boundary
 
 Future You remains an educational fitness/wellness prototype, not individualized medical care. Exercise demonstrations/video remain an important gap before broad beginner use.
+
+
+## V1.13 legal/privacy layer
+
+- Bilingual `impressum.html`, `datenschutz.html`, and `health-safety.html`.
+- Legal links on the landing page, in every main app view footer, and in Settings.
+- Privacy notice documents GitHub Pages hosting, local-only IndexedDB/Cache Storage, no app analytics/ads, and the current no-tracking-cookie-banner setup.
+- Pregnancy is explicitly grouped with medical/clinical restrictions in onboarding and Health & Safety guidance.
+- Provider: private individual, Germany; free public beta.
+
+
+## V1.13 — English-only app UI
+
+The main app is explicitly marked as English and opt-outs of automatic browser translation (`translate="no"`, `notranslate`, and Google notranslate metadata). The PWA manifest also declares `lang: en`. Legal documents remain bilingual German/English.

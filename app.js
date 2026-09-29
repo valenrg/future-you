@@ -126,6 +126,7 @@ function shell(content, active = state.view) {
         <button class="icon-btn" data-action="settings" aria-label="Settings">⚙</button>
       </header>
       ${content}
+      ${legalFooter()}
     </main>
     <nav class="bottom-nav" aria-label="Main navigation">
       <div class="nav-brand" aria-hidden="true">FY<span>.</span></div>
@@ -139,6 +140,14 @@ function shell(content, active = state.view) {
 
 function navButton(view, icon, label, active) {
   return `<button class="nav-btn ${active===view?'active':''}" data-view="${view}"><b>${icon}</b>${label}</button>`;
+}
+
+function legalFooter() {
+  return `<footer class="legal-links" aria-label="Legal information">
+    <a href="./impressum.html">Legal notice</a>
+    <a href="./datenschutz.html">Privacy</a>
+    <a href="./health-safety.html">Health &amp; Safety</a>
+  </footer>`;
 }
 
 function render() {
@@ -182,6 +191,7 @@ function landing() {
     </section>
     <button class="btn primary" data-action="start-onboarding">Build my 12-week plan</button>
     <p class="privacy">About 2 minutes · educational, not medical care</p>
+    ${legalFooter()}
   </main>`;
 }
 
@@ -331,7 +341,7 @@ function onboard3() {
         ${option('Pelvic floor','limitations','pelvic-floor','Concern with impact / pressure')}
         ${option('No jumping','limitations','no-impact','Avoid impact work')}
       </div>
-      <button class="medical-flag ${state.draft.limitations.includes('medical-clearance')?'selected':''}" data-select="limitations" data-value="medical-clearance"><span>!</span><div><strong>Recent significant injury/surgery or clinician-imposed restriction</strong><small>Future You won't generate unsupervised training until you're cleared.</small></div></button>
+      <button class="medical-flag ${state.draft.limitations.includes('medical-clearance')?'selected':''}" data-select="limitations" data-value="medical-clearance"><span>!</span><div><strong>Pregnancy, recent significant injury/surgery or clinician-imposed restriction</strong><small>Future You won't generate unsupervised training until you have individualized guidance or clearance.</small></div></button>
     </div>
 
     <div class="question-block">
@@ -670,7 +680,8 @@ function settingsView() {
     <div class="card settings-schedule"><div class="row between"><div><h3>Schedule</h3><p class="muted">${scheduleForWeek(p,state.startDate).map(x=>x.day).join(', ')} · ${timeMap[p.timeSlot][1]}</p></div></div><button class="btn secondary small" data-action="edit-schedule">Change days / time</button></div>
     ${sd?scheduleEditor(sd):''}
     <div class="card settings-health"><h3>Health baseline</h3><p class="muted">${state.health?.setupDone?'Health priorities are set up and stored locally.':'Not set up yet.'}</p><button class="btn secondary small" data-view="health">${state.health?.setupDone?'Review Health':'Set up Health'}</button></div>
-    <div class="card settings-safety"><h3>Safety</h3><p class="muted">${safetyCopy}</p></div>
+    <div class="card settings-safety"><h3>Safety</h3><p class="muted">${safetyCopy}</p><a class="text-link" href="./health-safety.html">Read Health &amp; Safety →</a></div>
+    <div class="card settings-legal"><h3>Legal &amp; privacy</h3><p class="muted">Future You is a free public beta operated from Germany. Legal information is available in German and English.</p><div class="legal-card-links"><a href="./impressum.html">Legal notice</a><a href="./datenschutz.html">Privacy</a><a href="./health-safety.html">Health &amp; Safety</a></div></div>
     <div class="card settings-reset"><h3>Start fresh</h3><p class="muted">This permanently deletes your profile, plan history, workouts, Health baseline and check-ins from this browser.</p><button class="btn danger" data-action="delete-data">Delete all local data</button></div>
   </section>`;
 }
@@ -966,7 +977,7 @@ async function advanceOnboarding() {
   if(state.onboardingStep===1 && state.draft.preferredDays.length!==state.draft.daysPerWeek){toast(`Choose exactly ${state.draft.daysPerWeek} training days`);return;}
   if(state.onboardingStep<2){state.onboardingStep++;render();scrollTo(0,0);return;}
   if(!state.draft.acceptedSafety){toast('Please acknowledge the safety note');return;}
-  if(state.draft.limitations.includes('medical-clearance')){toast('Get clearance for unsupervised exercise before Future You generates a training plan.');return;}
+  if(state.draft.limitations.includes('medical-clearance')){toast('Get individualized guidance or clearance before Future You generates an unsupervised training plan.');return;}
   const weight=Number(state.draft.weightKg);
   state.profile={...state.draft, weightKg:Number.isFinite(weight)&&weight>0?weight:null, preferredDays:[...state.draft.preferredDays], goals:[...state.draft.goals], limitations:[...state.draft.limitations]};
   state.startDate=dateISO();
