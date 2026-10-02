@@ -1,4 +1,4 @@
-# Future You — V1.13 visual regression
+# Future You — V1.14 visual regression
 
 - Replaced coral/pink secondary contrast treatment with steel-blue/slate.
 - Checked that no `--warm`, `--warm-soft`, or `.card.warm` tokens remain.
@@ -108,3 +108,12 @@ Before a beta release, still test on physical iPhone/iPad/Android devices for:
 - PWA manifest declares `lang: en`.
 - App UI legal labels are English-first.
 - Legal documents remain bilingual by design.
+
+
+## V1.14 onboarding copy checks
+
+- [x] First onboarding screen explicitly but subtly states the app is designed for women 40+.
+- [x] “How many days can you protect?” removed.
+- [x] “defend” scheduling metaphor removed.
+- [x] Training-day copy now uses realistic/sustainable language.
+- [x] Service-worker cache bumped to `future-you-v1.14.0`.

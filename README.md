@@ -1,8 +1,15 @@
-# Future You — V1.13
+# Future You — V1.14
 
 A responsive, local-only Progressive Web App for women 40+ focused on evidence-led training, accountability and a deliberately small longevity layer.
 
-## What V1.13 changes
+### V1.14 onboarding copy refinement
+
+- Replaces “How many days can you protect?” with “How many days can you realistically train?”
+- Removes the related “defend your days” metaphor from schedule setup.
+- Makes the intended audience clear on the first onboarding screen with subtle women-40+ wording, without changing branding, name or colour system.
+
+
+## What V1.14 changes
 
 ### Aubergine contrast cards
 

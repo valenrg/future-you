@@ -234,7 +234,7 @@ function strategyPreview() {
 function onboard1() {
   const showHomeKit = state.draft.equipment === 'home_equipment';
   return `<section class="onboarding-section">
-    <div class="onboarding-hero"><div class="eyebrow">Start where you are</div><h1>Build training around your real life.</h1><p>Every answer below changes the program: exercise choice, volume, intensity or session length.</p></div>
+    <div class="onboarding-hero"><div class="eyebrow">Designed for women 40+</div><h1>Build training around your real life.</h1><p>Future You is built around the strength, power and healthy-ageing priorities that matter from midlife onward. Every answer below changes the program: exercise choice, volume, intensity or session length.</p></div>
 
     <div class="question-block">
       <div class="question-head"><span>1</span><div><h3>How familiar are you with strength training?</h3><p>We'll use this to set exercise complexity, reps and progression.</p></div></div>
@@ -279,7 +279,7 @@ function onboard1() {
     </div>
 
     <div class="question-block">
-      <div class="question-head"><span>5</span><div><h3>How many days can you protect?</h3><p>Pick the number that still works during a busy week.</p></div></div>
+      <div class="question-head"><span>5</span><div><h3>How many days can you realistically train?</h3><p>Choose the number you can usually sustain, even during a busy week.</p></div></div>
       <div class="day-count-grid">
         ${[2,3,4].map(v=>`<button class="day-count ${state.draft.daysPerWeek===v?'selected':''}" data-select="daysPerWeek" data-value="${v}"><strong>${v}</strong><span>days / week</span>${v===2?'<small>Great place to start</small>':v===3?'<small>Balanced default</small>':'<small>More training variety</small>'}</button>`).join('')}
       </div>
@@ -300,10 +300,10 @@ function schedulePreview() {
 function onboard2() {
   const dayLabel={Mon:'M',Tue:'Tu',Wed:'W',Thu:'Th',Fri:'F',Sat:'Sa',Sun:'Su'};
   return `<section class="onboarding-section">
-    <div class="onboarding-hero"><div class="eyebrow">Make it real</div><h1>Put training on your actual week.</h1><p>Choose ${state.draft.daysPerWeek} days you can usually defend. You can move sessions later without losing credit.</p></div>
+    <div class="onboarding-hero"><div class="eyebrow">Make it real</div><h1>Put training on your actual week.</h1><p>Choose ${state.draft.daysPerWeek} days that usually fit your week. You can move sessions later without losing credit.</p></div>
 
     <div class="question-block schedule-question">
-      <div class="question-head"><span>1</span><div><h3>Which days are yours?</h3><p>Select exactly ${state.draft.daysPerWeek}. We'll build the session order around them.</p></div></div>
+      <div class="question-head"><span>1</span><div><h3>Which days work best?</h3><p>Select exactly ${state.draft.daysPerWeek}. We'll build the session order around them.</p></div></div>
       <div class="week-picker">
         ${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<button data-day="${d}" class="${state.draft.preferredDays.includes(d)?'on':''}"><span>${dayLabel[d]}</span><small>${d}</small></button>`).join('')}
       </div>
